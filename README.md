@@ -1,54 +1,34 @@
-# React + TypeScript + Vite
+# HTTP Last-Modified テスト
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Vite+React+Vercelで構築したHTTPヘッダーテスト用サイトです。主に`Last-Modified`ヘッダーと`304 Not Modified`レスポンスの動作確認を目的としています。
 
-Currently, two official plugins are available:
+## 検証方法
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### curlでの確認
 
-## Expanding the ESLint configuration
+```bash
+# 初回アクセス
+curl -I https://your-vercel-app.vercel.app/index.html
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# 再アクセス（If-Modified-Sinceを指定）
+curl -I -H "If-Modified-Since: <前回のLast-Modified値>" https://your-vercel-app.vercel.app/index.html
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### ブラウザでの確認
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Chrome DevToolsを開く（F12）
+2. Networkタブを選択
+3. ページをリロード
+4. documentタイプのリクエストで`304 Not Modified`を確認
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## 動作の流れ
+
+1. 初回アクセス: `200 OK` + `Last-Modified`ヘッダー
+2. 再アクセス: `304 Not Modified`（変更がない場合）
+
+## 起動方法
+
+```bash
+npm install
+npm run dev
 ```
