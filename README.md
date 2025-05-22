@@ -8,10 +8,10 @@ Vite+React+Vercelで構築したHTTPヘッダーテスト用サイトです。�
 
 ```bash
 # 初回アクセス
-curl -I https://your-vercel-app.vercel.app/index.html
+curl -I https://lastmodified-attr-on-header2.vercel.app
 
 # 再アクセス（If-Modified-Sinceを指定）
-curl -I -H "If-Modified-Since: <前回のLast-Modified値>" https://your-vercel-app.vercel.app/index.html
+curl -I -H "If-Modified-Since: <前回のLast-Modified値>" https://lastmodified-attr-on-header2.vercel.app/
 ```
 
 ### ブラウザでの確認
